@@ -1,26 +1,57 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Base - Dark Blue */
+    --background: 220 23% 15%; /* Dark slate */
+    --foreground: 210 30% 92%; /* Soft white */
+
+    /* Card */
+    --card: 220 23% 18%;
+    --card-foreground: 210 30% 92%;
+
+    /* Popover */
+    --popover: 220 23% 20%;
+    --popover-foreground: 210 30% 92%;
+
+    /* Primary - Soft Blue (#9FB3DF) */
+    --primary: 220 50% 75%;
+    --primary-foreground: 220 30% 15%;
+
+    /* Secondary - Sky Blue (#9EC6F3) */
+    --secondary: 210 80% 80%;
+    --secondary-foreground: 210 30% 15%;
+
+    /* Muted */
+    --muted: 220 15% 30%;
+    --muted-foreground: 210 20% 70%;
+
+    /* Accent - Pale Blue (#BDDDE4) */
+    --accent: 190 40% 80%;
+    --accent-foreground: 190 30% 15%;
+
+    /* Destructive - Soft Coral */
+    --destructive: 0 70% 70%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders */
+    --border: 220 15% 30%;
+    --input: 220 15% 30%;
+    --ring: 210 80% 60%;
+
+    /* Radius */
+    --radius: 0.75rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
 }
