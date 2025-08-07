@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "../../globals.css";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

@@ -12,8 +12,16 @@ export interface ActionResult {
 	errorDesc: string[] | null;
 }
 
+// Define the structure of prevState (if necessary)
+interface PrevState {
+  user: {
+    id: string;
+    email: string;
+  };
+}
+
 export async function handleSignIn(
-	prevState: any,
+	prevState: PrevState,  // Use a more specific type for prevState
 	formData: FormData
 ): Promise<ActionResult> {
 	const values = formSchema.safeParse({

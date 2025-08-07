@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import TicketCard from "./components/ticket-card";
 import { getUser } from "@/lib/auth";
@@ -30,7 +29,7 @@ export default async function MyTicketsPage() {
 							My Tickets
 						</h1>
 						<p className="font-medium text-lg leading-[27px]">
-							183,042 flights avaiable
+							183,042 flights available
 						</p>
 					</div>
 					<div className="w-full h-[15px] bg-gradient-to-t from-[#080318] to-[rgba(8,3,24,0)] absolute bottom-0" />

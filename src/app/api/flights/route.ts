@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
 
 		return Response.json({ data });
 	} catch (error) {
+		console.error(error); // Log the error to see what went wrong
 		return Response.json(
 			{
 				error: true,

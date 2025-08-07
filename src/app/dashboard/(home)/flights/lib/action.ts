@@ -6,14 +6,11 @@ import { formFlightSchema } from "./validation";
 import prisma from "../../../../../../lib/prisma";
 import { generateSeatPerClass } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
-import { unknown } from "zod";
 
 export async function saveFlight(
 	prevState: unknown,
 	formData: FormData
 ): Promise<ActionResult> {
-	console.log(formData.get("planeId"));
-
 	const departureDate = new Date(formData.get("departureDate") as string);
 	const arrivalDate = new Date(formData.get("arrivalDate") as string);
 
@@ -37,14 +34,14 @@ export async function saveFlight(
 		};
 	}
 
-	const data = await prisma.flight.create({
+	const flight = await prisma.flight.create({
 		data: {
 			...validate.data,
 			price: Number.parseInt(validate.data.price),
 		},
 	});
 
-	const seats = generateSeatPerClass(data.id);
+	const seats = generateSeatPerClass(flight.id);
 
 	await prisma.flightSeat.createMany({
 		data: seats,
@@ -90,7 +87,7 @@ export async function updateFlight(
 	}
 
 	await prisma.flight.update({
-		where: { id: id },
+		where: { id },
 		data: {
 			...validate.data,
 			price: Number.parseInt(validate.data.price),
@@ -104,7 +101,7 @@ export async function updateFlight(
 export async function deleteFlight(id: string) {
 	try {
 		await prisma.flightSeat.deleteMany({ where: { flightId: id } });
-		await prisma.flight.delete({ where: { id: id } });
+		await prisma.flight.delete({ where: { id } });
 	} catch (error) {
 		console.log(error);
 	}

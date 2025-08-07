@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { FC } from "react";
 import { ActionResult, handleSignIn } from "./actions";
@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
 
-interface FormSignInProps {}
+// HAPUS: interface FormSignInProps {}
 
 const initialFormState: ActionResult = {
     errorTitle: null,
@@ -23,7 +23,8 @@ const SubmitButton = () => {
 	);
 };
 
-const FormSignIn: FC<FormSignInProps> = ({}) => {
+// HAPUS props kalau tidak dipakai
+const FormSignIn: FC = () => {
     const [state, formAction] = React.useActionState(handleSignIn, initialFormState);
 
     console.log(state);
@@ -44,7 +45,7 @@ const FormSignIn: FC<FormSignInProps> = ({}) => {
 						<ul className="list-disc list-inside">
 							{state.errorDesc?.map((value, index) => (
 								<li key={index}>{value}</li>
-							))}
+							))}	
 						</ul>
 					</div>
 				)}

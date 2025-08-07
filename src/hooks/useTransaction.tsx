@@ -7,81 +7,91 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 type Props = {
-	user: User | null;
+  user: User | null;
+};
+
+type TransactionData = {
+  bookingDate: Date;
+  customerId?: string;
+  flightId?: string;
+  price: number;
+  seatId?: string;
+  departureCityCode?: string;
+  destinationCityCode?: string;
 };
 
 const useTransaction = ({ user }: Props) => {
-	const { data } = useCheckoutData();
+  const { data } = useCheckoutData();
 
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const router = useRouter();
+  const router = useRouter();
 
-	const selectedSeat = useMemo(() => {
-		return SEAT_VALUES[(data?.seat as SeatValuesType) ?? "ECONOMY"];
-	}, [data?.seat]);
+  const selectedSeat = useMemo(() => {
+    return SEAT_VALUES[(data?.seat as SeatValuesType) ?? "ECONOMY"];
+  }, [data?.seat]);
 
-	const transactionMutate = useMutation({
-		mutationFn: (data: any) =>
-			axios
-				.post("/api/transactions/create", data)
-				.then((res) => res.data),
-	});
+  const transactionMutate = useMutation({
+    mutationFn: (data: TransactionData) =>
+      axios
+        .post("/api/transactions/create", data)
+        .then((res) => res.data),
+  });
 
-	const payTransaction = async () => {
-		if (!data && !user) {
-			return null;
-		}
+  const payTransaction = async () => {
+    if (!data && !user) {
+      return null;
+    }
 
-		const totalPrice = Number(
-			data?.flightDetail?.price ?? 0 + selectedSeat.additionalPrice
-		);
+    const totalPrice = Number(
+      data?.flightDetail?.price ?? 0 + selectedSeat.additionalPrice
+    );
 
-		const bodyData = {
-			bookingDate: new Date(),
-			customerId: user?.id,
-			flightId: data?.flightDetail?.id,
-			price: totalPrice,
-			seatId: data?.seatDetail?.id,
-			departureCityCode: data?.flightDetail?.departureCityCode,
-			destinationCityCode: data?.flightDetail?.destinationCityCode,
-		};
+    const bodyData: TransactionData = {
+      bookingDate: new Date(),
+      customerId: user?.id,
+      flightId: data?.flightDetail?.id,
+      price: totalPrice,
+      seatId: data?.seatDetail?.id,
+      departureCityCode: data?.flightDetail?.departureCityCode,
+      destinationCityCode: data?.flightDetail?.destinationCityCode,
+    };
 
-		try {
-			setIsLoading(true);
-			const transaction = await transactionMutate.mutateAsync(bodyData);
+    try {
+      setIsLoading(true);
+      const transaction = await transactionMutate.mutateAsync(bodyData);
 
-			// handle midtrans
-			window.snap.pay(transaction.midtrans.token, {
-				onSuccess: (result: unknown) => {
-					console.log(result);
-					router.push("/success-checkout");
-				},
-				onPending: (result: unknown) => {
-					console.log(result);
-					router.push("/success-checkout");
-				},
-				onError: (result: unknown) => {
-					console.log(result);
-					alert("Transaksi gagal silahkan cobalagi");
-				},
-				onClose: (result: unknown) => {
-					console.log(result);
-					alert("Transaksi gagal silahkan cobalagi");
-				},
-			});
+      // handle midtrans
+      window.snap.pay(transaction.midtrans.token, {
+        onSuccess: (result: unknown) => {
+          console.log(result);
+          router.push("/success-checkout");
+        },
+        onPending: (result: unknown) => {
+          console.log(result);
+          router.push("/success-checkout");
+        },
+        onError: (result: unknown) => {
+          console.log(result);
+          alert("Transaksi gagal silahkan cobalagi");
+        },
+        onClose: (result: unknown) => {
+          console.log(result);
+          alert("Transaksi gagal silahkan cobalagi");
+        },
+      });
 
-			setIsLoading(false);
-		} catch (error) {
-			setIsLoading(false);
-			console.log(error);
-		}
-	};
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+    }
+  };
 
-	return {
-		payTransaction,
-		isLoading,
-	};
+  return {
+    payTransaction,
+    isLoading,
+  };
 };
 
 export default useTransaction;

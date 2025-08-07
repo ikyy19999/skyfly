@@ -9,12 +9,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getAirplaneById(id: string) {
 	try {
-		const data = await prisma.airplane.findFirst({
-			where: {
-				id: id,
-			},
-		});
-
+		const data = await prisma.airplane.findFirst({ where: { id } });
 		return data;
 	} catch (error) {
 		console.log(error);
@@ -51,16 +46,14 @@ export async function saveAirplane(
 	}
 
 	try {
-		const data = await prisma.airplane.create({
+		await prisma.airplane.create({
 			data: {
 				name: values.data.name,
 				code: values.data.code,
 				image: uploadedFile as string,
 			},
 		});
-	} catch (error) {
-		console.log(error);
-
+	} catch {
 		return {
 			errorTitle: "Failed to insert data",
 			errorDesc: ["There was a problem with the connection, please try again"],
@@ -116,10 +109,8 @@ export async function updateAirplane(
 		filename = uploadedFile as string;
 	} else {
 		const airplane = await prisma.airplane.findFirst({
-			where: { id: id },
-			select: {
-				image: true,
-			},
+			where: { id },
+			select: { image: true },
 		});
 
 		filename = airplane?.image;
@@ -127,16 +118,14 @@ export async function updateAirplane(
 
 	try {
 		await prisma.airplane.update({
-			where: {
-				id: id,
-			},
+			where: { id },
 			data: {
 				name: values.data.name,
 				code: values.data.code,
 				image: filename as string,
 			},
 		});
-	} catch (error) {
+	} catch {
 		return {
 			errorTitle: "Failed to update data",
 			errorDesc: ["There was a problem with the connection, please try again"],
@@ -150,7 +139,7 @@ export async function updateAirplane(
 export async function deleteAirplane(
 	id: string
 ): Promise<ActionResult | undefined> {
-	const data = await prisma.airplane.findFirst({ where: { id: id } });
+	const data = await prisma.airplane.findFirst({ where: { id } });
 
 	if (!data) {
 		return {
@@ -169,14 +158,9 @@ export async function deleteAirplane(
 	}
 
 	try {
-		await prisma.airplane.delete({
-			where: {
-				id: id,
-			},
-		});
+		await prisma.airplane.delete({ where: { id } });
 	} catch (error) {
 		console.log(error);
-
 		return {
 			errorTitle: "Failed to delete data",
 			errorDesc: ["There was a problem with the connection, please try again"],

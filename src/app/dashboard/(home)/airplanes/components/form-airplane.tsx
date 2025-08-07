@@ -20,8 +20,10 @@ const initialFormState: ActionResult = {
 };
 
 const FormAirplane: FC<FormAirplaneProps> = ({ type, defaultValues }) => {
-	const updateAirplaneWithId = (_state: ActionResult, formData: FormData) =>
-		updateAirplane(null, defaultValues?.id!!, formData);
+	const updateAirplaneWithId = (_state: ActionResult, formData: FormData) => {
+		if (!defaultValues?.id) throw new Error("Missing airplane ID for update");
+		return updateAirplane(null, defaultValues.id, formData);
+	};
 
 	const [state, formAction] = useFormState(
 		type === "ADD" ? saveAirplane : updateAirplaneWithId,
